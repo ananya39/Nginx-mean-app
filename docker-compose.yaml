@@ -27,7 +27,6 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: always
     ports:
       - "80:80"
     depends_on:
