@@ -1,0 +1,47 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push backend Docker image
+        run: |
+          docker build -t ananya117/backend:latest ./backend
+          docker push ananya117/backend:latest
+
+      - name: Build and push frontend Docker image
+        run: |
+          docker build -t ananya117/frontend:latest ./frontend
+          docker push ananya117/frontend:latest
+
+      - name: Deploy Docker Containers on EC2
+        run: |
+          # Write the SSH key from GitHub Secrets to a file
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          
+          # SSH into EC2 and run Docker Compose
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd ~/mean-app
+            docker-compose pull
+            docker-compose down
+            docker-compose up -d
+          EOF
+
+          # Remove the key file after deployment
+          rm -f ec2_key.pem
