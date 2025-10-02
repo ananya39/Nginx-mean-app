@@ -26,10 +26,10 @@ docker push <your-dockerhub-username>/frontend:latest
 
 Launch an Ubuntu EC2 instance.
 
-```
-## Install Docker and Docker Compose:
-```
 
+## Install Docker and Docker Compose:
+
+```
 sudo apt update
 sudo apt install docker.io docker-compose -y
 sudo systemctl enable docker
@@ -51,7 +51,6 @@ sudo chown -R ubuntu:ubuntu /home/ubuntu/mean-app
 
 ```
 ## Deploy the app using Docker Compose:
-```
 
 ```
 cd ~/mean-app
@@ -64,6 +63,6 @@ docker-compose up -d
 ![Tutorials list](images/image.png)
 ![Tutorial Submitted](images/img-new.png)
 
-```
 
-```
+
+
